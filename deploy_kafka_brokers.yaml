@@ -7,8 +7,8 @@ spec:
   replicas: 3
   image:
     application: confluentinc/cp-server:7.6.0
+    init: confluentinc/confluent-init-container:2.7.0
   dataVolumeCapacity: 20Gi
-  storageClass: gp2
   configOverrides:
     server:
       - "num.partitions=6"
