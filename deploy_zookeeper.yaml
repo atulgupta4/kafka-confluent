@@ -1,11 +1,32 @@
-apiVersion: platform.confluent.io/v1beta1
-kind: Zookeeper
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
   name: zookeeper
-  namespace: confluent
 spec:
-  replicas: 3
-  image:
-    application: confluentinc/cp-zookeeper:7.6.0
-  dataVolumeCapacity: 10Gi
-  storageClass: gp2
+  serviceName: zookeeper
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zookeeper
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+    spec:
+      initContainers:
+        - name: zookeeper-init
+          image: zookeeper:3.7.0 # specify the correct version/image for Zookeeper
+      containers:
+        - name: zookeeper
+          image: zookeeper:3.7.0 # specify the correct version/image for Zookeeper
+          volumeMounts:
+            - name: log-volume
+              mountPath: /var/lib/zookeeper
+  volumeClaimTemplates:
+    - metadata:
+        name: log-volume
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi  # Adjust based on your needs for log volume capacity
