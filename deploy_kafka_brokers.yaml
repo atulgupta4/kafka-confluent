@@ -1,0 +1,15 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: Kafka
+metadata:
+  name: kafka
+  namespace: confluent
+spec:
+  replicas: 3
+  image:
+    application: confluentinc/cp-server:7.6.0
+  dataVolumeCapacity: 20Gi
+  storageClass: gp2
+  configOverrides:
+    server:
+      - "num.partitions=6"
+      - "default.replication.factor=3"
